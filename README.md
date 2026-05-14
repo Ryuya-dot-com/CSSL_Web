@@ -27,7 +27,7 @@ Zoteroの `cross situational statistical learning` / `statistical learning` コ�
 ## ファイル構成
 
 ```text
-web_experiment/
+CSSL_Web/
 ├── index.html
 ├── css/styles.css
 ├── js/
@@ -40,7 +40,12 @@ web_experiment/
     └── images/*.png
 ```
 
-`stimuli/audio/female/*.mp3` は `Experiment/stimuli/audio/female/*.wav` から変換したブラウザ配信用コピーです。gTTSやブラウザ音声合成は本番刺激音声として使用しません。
+`stimuli/audio/female/*.mp3` は `../Experiment/stimuli/audio/female/*.wav` から変換したブラウザ配信用コピーです。gTTSやブラウザ音声合成は本番刺激音声として使用しません。音声を再生成する場合は、fMRI_CSSL 全体のチェックアウト内で以下を実行します。
+
+```bash
+cd /Users/ryuya/Library/CloudStorage/Dropbox/fMRI_CSSL/CSSL_Web
+python3 scripts/convert_mri_wav_to_mp3.py
+```
 
 ## ローカル実行
 
