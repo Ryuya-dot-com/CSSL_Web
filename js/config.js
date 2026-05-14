@@ -1,0 +1,118 @@
+/**
+ * Cross-Situational Learning Experiment - Configuration
+ * Based on Berens et al. (2018) Current Biology
+ */
+
+const CONFIG = {
+    // === 実験構造 ===
+    nBlocks: 6,
+    repetitionsPerBlock: 3,  // 各単語のブロック内出現回数
+    objectsPerTrial: 3,      // 学習試行あたりのオブジェクト数
+    
+    // === 刺激数 ===
+    nWordsPerSet: 18,        // List 1の学習刺激数
+    nActiveWordsPerSet: 9,   // pre-learned / to-be-learned 各語数
+    nLureWords: 9,           // List 2の再認テスト用ルアー数
+    nPracticeItems: 9,       // 練習用絵文字数
+    nPracticeBlocks: 2,      // 練習ブロック数
+    
+    // === Pre-learned訓練 ===
+    prelearnedRepetitions: 5,  // 各ペアの学習回数
+    prelearnedTrialDuration: 6000,  // 明示的学習の呈示時間(ms)
+    prelearnedAudioDelay: 0,        // 画像提示から音声開始まで(ms)
+    prelearnedITI: 2000,            // 明示的学習のITI(ms)
+    
+    // === To-be-learned馴化 ===
+    familiarizationRepetitions: 5,  // 馴化の反復回数
+    familiarizationDuration: 6000,  // 馴化の呈示時間(ms)
+    familiarizationITI: 500,        // 馴化のITI(ms)
+    
+    // === 学習フェーズタイミング ===
+    learningTrialDuration: 6000,   // 学習試行の総時間(ms)
+    wordOnsetInterval: 2000,        // 単語間のインターバル(ms)
+    learningITI: { min: 3000, max: 7000 },  // 試行間インターバル(ms)
+    
+    // === テストフェーズタイミング ===
+    fixationDuration: 500,         // 注視点の時間(ms)
+    preAudioDelay: 0,              // 音声前の遅延(ms)
+    maxResponseTime: 6000,         // 最大反応時間(ms)
+    responseEnableDelay: 1100,     // 反応受付開始までの遅延(ms)
+    testITI: { min: 2000, max: 4000 },  // 試行間インターバル(ms)
+    feedbackDuration: 500,         // フィードバック表示時間(ms)
+    interBlockInterval: 6000,      // 学習↔テストの間隔(ms)
+    
+    // === 練習フェーズタイミング ===
+    practiceTrialDuration: 6000,
+    practiceWordInterval: 2000,
+    practiceResponseTime: 8000,
+    practiceITI: { min: 1500, max: 2500 },
+    
+    // === 再認テスト（馴化後） ===
+    recognitionInterStimulusInterval: 500,
+    recognitionMaxResponseTime: 6000,
+    
+    // === 課題順序・フィードバック ===
+    // Berens et al. (2018) counterbalanced pre-scanner task order.
+    counterbalancePreScanOrder: true,
+    feedback: {
+        practice: true,
+        prelearnedTest: false,
+        mainTest: false,
+        familiarizationRecognition: false
+    },
+    
+    // === 9-AFC設定 ===
+    gridSize: 3,                   // 3x3グリッド
+    nAlternatives: 9,
+    
+    // === 画面サイズ ===
+    imageSize: {
+        learning: 180,             // 学習時の画像サイズ(px)
+        test: 120,                 // テスト時の画像サイズ(px)
+        practice: 100              // 練習時の画像サイズ(px)
+    },
+    
+    // === 音声設定 ===
+    audioGender: 'female',         // 女性の声を使用
+    
+    // === パス設定 ===
+    stimuliPath: 'stimuli/',
+    audioPath: 'stimuli/audio/female/',
+    imagePath: 'stimuli/images/',
+    
+    // === 混同ペア定義 ===
+    confusionPairs: [
+        ['/r/', '/l/'],
+        ['/v/', '/b/'],
+        ['/θ/', '/s/'],
+        ['/f/', '/h/']
+    ]
+};
+
+// 練習用絵文字
+const PRACTICE_EMOJIS = [
+    { id: 'p1', emoji: '🍎', name: 'apple' },
+    { id: 'p2', emoji: '🚗', name: 'car' },
+    { id: 'p3', emoji: '🏠', name: 'house' },
+    { id: 'p4', emoji: '⭐', name: 'star' },
+    { id: 'p5', emoji: '🌸', name: 'flower' },
+    { id: 'p6', emoji: '🎵', name: 'music' },
+    { id: 'p7', emoji: '🚲', name: 'bicycle' },
+    { id: 'p8', emoji: '📚', name: 'books' },
+    { id: 'p9', emoji: '🐟', name: 'fish' }
+];
+
+// 練習用の無意味語（発音しやすいもの）
+const PRACTICE_WORDS = [
+    { id: 'p1', word: 'bloop', audioFile: null },  // 音声合成を使用
+    { id: 'p2', word: 'grint', audioFile: null },
+    { id: 'p3', word: 'plonk', audioFile: null },
+    { id: 'p4', word: 'skreb', audioFile: null },
+    { id: 'p5', word: 'twang', audioFile: null },
+    { id: 'p6', word: 'zorch', audioFile: null },
+    { id: 'p7', word: 'dasket', audioFile: null },
+    { id: 'p8', word: 'wipple', audioFile: null },
+    { id: 'p9', word: 'niblet', audioFile: null }
+];
+
+export { CONFIG, PRACTICE_EMOJIS, PRACTICE_WORDS };

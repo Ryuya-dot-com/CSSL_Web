@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Situational Learning Experiment</title>
+    <link rel="icon" href="data:,">
+    
+    <!-- ExcelJS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    
+    <!-- スタイルシート -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- ========================================
+         開始画面
+         ======================================== -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-content">
+            <h1>単語学習実験</h1>
+            <p>
+                この実験では、2音節の英単語と物体の画像の対応関係を学習していただきます。<br>
+                実験は約50〜60分程度かかります。
+            </p>
+            
+            <div class="input-group">
+                <label for="participant-id">参加者ID</label>
+                <input type="number" id="participant-id" min="1" max="999" placeholder="例: 1">
+            </div>
+            
+            <button id="start-btn" class="btn">開始</button>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         説明画面
+         ======================================== -->
+    <div id="instruction-screen" class="screen">
+        <div class="instruction-content">
+            <h2>実験の説明</h2>
+            
+            <div class="instruction-section">
+                <h3>📚 実験の流れ</h3>
+                <ol>
+                    <li><strong>練習フェーズ</strong>: 絵文字を使って操作に慣れます</li>
+                    <li><strong>事前学習</strong>: 9個の単語と画像の対応を1つずつ学習します</li>
+                    <li><strong>馴化フェーズ</strong>: 単語のみ/画像のみの提示と2択の再認テストを行います</li>
+                    <li><strong>メイン実験</strong>: 学習とテストを6ブロック繰り返します</li>
+                </ol>
+                <p>事前学習と馴化フェーズの順序は参加者ごとに変わります。</p>
+            </div>
+            
+            <div class="instruction-section">
+                <h3>📖 学習パート</h3>
+                <p>
+                    画面に3つの物体が表示され、2音節の英単語の音声が順番に流れます。<br>
+                    単語の順番と物体の位置は対応していません。対応関係を覚えてください。
+                </p>
+            </div>
+            
+            <div class="instruction-section">
+                <h3>✅ テストパート</h3>
+                <p>
+                    9つの物体が3×3のグリッドに表示されます。<br>
+                    英単語の音声を聞いて、対応する物体を<strong>クリック</strong>してください。<br>
+                    合図後、少し待ってからクリックできます。<br>
+                    できるだけ速く、正確に答えてください。
+                </p>
+            </div>
+            
+            <div class="instruction-section">
+                <h3>⚠️ 注意事項</h3>
+                <p>
+                    • 実験中は集中して取り組んでください<br>
+                    • 音量が適切に設定されていることを確認してください<br>
+                    • 実験終了後、結果ファイルが自動的にダウンロードされます
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="understand-btn" class="btn">理解しました - 開始する</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         ローディング画面
+         ======================================== -->
+    <div id="loading-screen" class="screen">
+        <div class="loading-content">
+            <p>刺激を読み込んでいます...</p>
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="loading-progress-text">0 / 0</p>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         実験画面
+         ======================================== -->
+    <div id="experiment-screen" class="screen">
+        <!-- 進捗表示 -->
+        <div class="experiment-progress">
+            <span id="experiment-progress-text">準備中...</span>
+        </div>
+        
+        <!-- 注視点 -->
+        <div id="fixation"></div>
+        
+        <!-- 刺激表示エリア -->
+        <div id="stimulus-area"></div>
+        
+        <!-- テスト用グリッド -->
+        <div id="grid-container"></div>
+    </div>
+    
+    <!-- ========================================
+         終了画面
+         ======================================== -->
+    <div id="end-screen" class="screen">
+        <div class="end-content">
+            <h2>🎉 実験終了</h2>
+            <p>お疲れ様でした！</p>
+            <p>結果ファイルがダウンロードされます。</p>
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #888;">
+                このウィンドウは閉じていただいて構いません。
+            </p>
+        </div>
+    </div>
+    
+    <!-- スクリプト -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
