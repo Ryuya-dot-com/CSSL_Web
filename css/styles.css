@@ -229,7 +229,8 @@ body {
 
 .stimulus-image {
     width: 180px;
-    height: 180px;
+    height: auto;
+    max-height: 180px;
     object-fit: contain;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -238,7 +239,8 @@ body {
 
 .stimulus-image-large {
     width: 250px;
-    height: 250px;
+    height: auto;
+    max-height: 250px;
     object-fit: contain;
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
@@ -325,8 +327,8 @@ body {
 }
 
 .grid-cell {
-    width: 140px;
-    height: 140px;
+    width: 280px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -348,8 +350,9 @@ body {
 }
 
 .grid-image {
-    width: 100px;
-    height: 100px;
+    width: 250px;
+    height: auto;
+    max-height: 160px;
     object-fit: contain;
 }
 
@@ -431,17 +434,21 @@ body {
 @media (max-width: 768px) {
     .stimulus-image {
         width: 120px;
-        height: 120px;
+        height: auto;
+        max-height: 120px;
     }
     
     .grid-cell {
-        width: 100px;
-        height: 100px;
+        width: 30vw;
+        height: 18vw;
+        min-width: 96px;
+        min-height: 64px;
     }
     
     .grid-image {
-        width: 70px;
-        height: 70px;
+        width: 27vw;
+        height: auto;
+        max-height: 15vw;
     }
     
     .emoji-large {
