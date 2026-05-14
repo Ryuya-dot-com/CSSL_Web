@@ -180,7 +180,7 @@ const LEARNING_POSITIONS = [
     { x: 50, y: 70 }
 ];
 
-function displayLearningStimuli(items, isEmoji = false) {
+function displayLearningStimuli(items) {
     const area = document.getElementById('stimulus-area');
     area.innerHTML = '';
     
@@ -196,14 +196,10 @@ function displayLearningStimuli(items, isEmoji = false) {
             transform: translate(-50%, -50%);
         `;
         
-        if (isEmoji) {
-            div.innerHTML = `<span class="emoji-large">${item.emoji}</span>`;
-        } else {
-            const img = document.createElement('img');
-            img.src = `${CONFIG.imagePath}${item.word}.png`;
-            img.className = 'stimulus-image';
-            div.appendChild(img);
-        }
+        const img = document.createElement('img');
+        img.src = `${CONFIG.imagePath}${item.word}.png`;
+        img.className = 'stimulus-image';
+        div.appendChild(img);
         
         area.appendChild(div);
     });
@@ -213,7 +209,7 @@ function displayLearningStimuli(items, isEmoji = false) {
 // テストグリッド表示（9-AFC）
 // =============================================================================
 
-function displayTestGrid(alternatives, isEmoji = false, options = {}) {
+function displayTestGrid(alternatives, options = {}) {
     return new Promise((resolve) => {
         const grid = document.getElementById('grid-container');
         grid.innerHTML = '';
@@ -238,14 +234,10 @@ function displayTestGrid(alternatives, isEmoji = false, options = {}) {
             cell.className = 'grid-cell';
             cell.dataset.index = idx;
             
-            if (isEmoji) {
-                cell.innerHTML = `<span class="emoji-grid">${item.emoji}</span>`;
-            } else {
-                const img = document.createElement('img');
-                img.src = `${CONFIG.imagePath}${item.word}.png`;
-                img.className = 'grid-image';
-                cell.appendChild(img);
-            }
+            const img = document.createElement('img');
+            img.src = `${CONFIG.imagePath}${item.word}.png`;
+            img.className = 'grid-image';
+            cell.appendChild(img);
             
             cell.addEventListener('click', () => {
                 if (responded) return;
@@ -416,7 +408,7 @@ async function runPrelearnedTraining() {
         await sleep(CONFIG.fixationDuration);
         hideFixation();
         
-        const gridPromise = displayTestGrid(alternatives, false, {
+        const gridPromise = displayTestGrid(alternatives, {
             enableDelayMs: CONFIG.responseEnableDelay
         });
         await sleep(CONFIG.preAudioDelay);
@@ -610,7 +602,7 @@ async function runMainExperiment() {
             updateProgress(t + 1, blockTrials.learning.length, `学習 ${t + 1}/${blockTrials.learning.length}`);
             
             const trial = blockTrials.learning[t];
-            displayLearningStimuli(trial.words, false);
+            displayLearningStimuli(trial.words);
             
             // 単語を順番に再生
             const trialStart = performance.now();
@@ -658,7 +650,7 @@ async function runMainExperiment() {
             await sleep(CONFIG.fixationDuration);
             hideFixation();
             
-            const gridPromise = displayTestGrid(trial.alternatives, false, {
+            const gridPromise = displayTestGrid(trial.alternatives, {
                 enableDelayMs: CONFIG.responseEnableDelay
             });
             await sleep(CONFIG.preAudioDelay);

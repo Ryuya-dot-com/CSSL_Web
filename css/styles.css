@@ -254,16 +254,6 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.emoji-large {
-    font-size: 120px;
-    line-height: 1;
-}
-
-.emoji-grid {
-    font-size: 60px;
-    line-height: 1;
-}
-
 .message {
     position: absolute;
     top: 50%;
@@ -449,14 +439,6 @@ body {
         width: 27vw;
         height: auto;
         max-height: 15vw;
-    }
-    
-    .emoji-large {
-        font-size: 80px;
-    }
-    
-    .emoji-grid {
-        font-size: 40px;
     }
 }
 
