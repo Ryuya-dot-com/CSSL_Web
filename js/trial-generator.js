@@ -233,42 +233,6 @@ function generateBlockTrials(tblWords, preWords, blockNum, rng) {
 }
 
 /**
- * 練習試行を生成
- */
-function generatePracticeTrials(items, rng) {
-    const nTrials = Math.ceil(items.length * 2 / 3);  // 各アイテム2回出現
-    const allPresentations = [...items, ...items];
-    const shuffled = rng.shuffle(allPresentations);
-    
-    const trials = [];
-    for (let i = 0; i < shuffled.length; i += 3) {
-        if (i + 3 <= shuffled.length) {
-            trials.push(shuffled.slice(i, i + 3));
-        }
-    }
-    
-    return trials;
-}
-
-/**
- * 練習テスト試行を生成
- */
-function generatePracticeTestTrials(items, rng) {
-    const shuffled = rng.shuffle([...items]);
-    
-    return shuffled.map(target => {
-        const alternatives = rng.shuffle([...items]);
-        const correctPosition = alternatives.findIndex(item => item.id === target.id);
-        
-        return {
-            target: target,
-            alternatives: alternatives,
-            correctPosition: correctPosition
-        };
-    });
-}
-
-/**
  * Pre-learned訓練試行を生成
  */
 function generatePrelearnedTrainingTrials(words, repetitions, rng) {
@@ -390,8 +354,6 @@ export {
     generateTestTrials,
     generateBlockTrials,
     generateAFCAlternatives,
-    generatePracticeTrials,
-    generatePracticeTestTrials,
     generatePrelearnedTrainingTrials,
     generateFamiliarizationTrials,
     generateRecognitionTrials,

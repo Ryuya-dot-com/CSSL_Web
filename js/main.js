@@ -3,13 +3,11 @@
  * Main Entry Point
  */
 
-import { CONFIG, PRACTICE_EMOJIS, PRACTICE_WORDS } from './config.js';
+import { CONFIG } from './config.js';
 import { LIST_1, LIST_2, STIMULI_MAP, getConfusablePhoneme } from './stimuli-data.js';
 import { 
     SeededRandom, 
     generateBlockTrials,
-    generatePracticeTrials,
-    generatePracticeTestTrials,
     generatePrelearnedTrainingTrials,
     generateFamiliarizationTrials,
     generateRecognitionTrials
@@ -35,7 +33,6 @@ const state = {
         group: null,
         startTime: null,
         endTime: null,
-        practice: [],
         prelearning: [],
         familiarization: [],
         mainExperiment: []
@@ -106,20 +103,6 @@ function playAudio(word) {
         source.connect(state.audioContext.destination);
         source.onended = resolve;
         source.start(0);
-    });
-}
-
-function speakWord(word) {
-    return new Promise((resolve) => {
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.85;
-        utterance.onend = resolve;
-        utterance.onerror = () => {
-            console.warn('Speech synthesis failed');
-            resolve();
-        };
-        speechSynthesis.speak(utterance);
     });
 }
 
@@ -354,116 +337,6 @@ function showCorrectCell(index) {
     if (cells[index]) {
         cells[index].classList.add('show-correct');
     }
-}
-
-// =============================================================================
-// 練習フェーズ
-// =============================================================================
-
-async function runPracticePhase() {
-    showScreen('experiment-screen');
-    showMessage('練習を開始します...');
-    await sleep(2000);
-    
-    // 練習アイテムをペアリング
-    const practiceItems = PRACTICE_EMOJIS.map((emoji, idx) => ({
-        ...emoji,
-        ...PRACTICE_WORDS[idx]
-    }));
-    
-    for (let block = 1; block <= CONFIG.nPracticeBlocks; block++) {
-        // 学習フェーズ
-        showMessage(`練習ブロック ${block} - 学習`);
-        await sleep(1500);
-        
-        const learningTrials = generatePracticeTrials(practiceItems, state.rng);
-        
-        for (let t = 0; t < learningTrials.length; t++) {
-            updateProgress(t + 1, learningTrials.length, `学習 ${t + 1}/${learningTrials.length}`);
-            
-            const trialItems = learningTrials[t];
-            displayLearningStimuli(trialItems, true);
-            
-            // 単語を順番に再生
-            const trialStart = performance.now();
-            const wordOrder = state.rng.shuffle([0, 1, 2]);
-            for (let i = 0; i < wordOrder.length; i++) {
-                if (i > 0) await sleep(CONFIG.practiceWordInterval);
-                await speakWord(trialItems[wordOrder[i]].word);
-            }
-            
-            const elapsed = performance.now() - trialStart;
-            const remainingTime = CONFIG.practiceTrialDuration - elapsed;
-            if (remainingTime > 0) await sleep(remainingTime);
-            clearStimuli();
-            
-            // ITI
-            showFixation();
-            await sleep(getRandomITI(CONFIG.practiceITI));
-            hideFixation();
-        }
-        
-        // テストフェーズ
-        showMessage(`練習ブロック ${block} - テスト`);
-        await sleep(1500);
-        
-        const testTrials = generatePracticeTestTrials(practiceItems, state.rng);
-        
-        for (let t = 0; t < testTrials.length; t++) {
-            updateProgress(t + 1, testTrials.length, `テスト ${t + 1}/${testTrials.length}`);
-            
-            const trial = testTrials[t];
-            
-            // 注視点
-            showFixation();
-            await sleep(CONFIG.fixationDuration);
-            hideFixation();
-            
-            // グリッド表示
-            clearStimuli();
-            
-            // 音声再生と同時にグリッド表示
-            const gridPromise = displayTestGrid(trial.alternatives, true, {
-                enableDelayMs: CONFIG.responseEnableDelay,
-                maxResponseTime: CONFIG.practiceResponseTime
-            });
-            await sleep(CONFIG.preAudioDelay);
-            speakWord(trial.target.word);
-            
-            const response = await gridPromise;
-            
-            const isCorrect = response.selectedIndex === trial.correctPosition;
-            if (CONFIG.feedback.practice && response.selectedIndex >= 0) {
-                highlightCell(response.selectedIndex, isCorrect);
-            }
-            if (CONFIG.feedback.practice && !isCorrect) {
-                showCorrectCell(trial.correctPosition);
-            }
-            
-            state.experimentData.practice.push({
-                block: block,
-                phase: 'test',
-                trial: t + 1,
-                target: trial.target.word,
-                response: response.selectedIndex >= 0 ? trial.alternatives[response.selectedIndex].word : 'timeout',
-                correct: isCorrect,
-                rt: response.rt
-            });
-            
-            if (CONFIG.feedback.practice) {
-                await sleep(CONFIG.feedbackDuration);
-            }
-            clearStimuli();
-            
-            // ITI
-            showFixation();
-            await sleep(getRandomITI(CONFIG.practiceITI));
-            hideFixation();
-        }
-    }
-    
-    showMessage('練習が終わりました');
-    await sleep(2000);
 }
 
 // =============================================================================
@@ -892,16 +765,6 @@ async function saveData() {
         { key: 'meaning', label: '意味', width: 28 }
     ], assignmentRows);
     
-    addObjectSheet('練習', [
-        { key: 'block', label: 'ブロック' },
-        { key: 'phase', label: 'フェーズ' },
-        { key: 'trial', label: '試行' },
-        { key: 'target', label: 'ターゲット', width: 16 },
-        { key: 'response', label: '反応', width: 16 },
-        { key: 'correct', label: '正誤' },
-        { key: 'rt', label: 'RT(ms)' }
-    ], state.experimentData.practice.map(row => ({ ...row, correct: boolCell(row.correct) })));
-    
     addObjectSheet('Prelearned', [
         { key: 'phase', label: 'フェーズ', width: 14 },
         { key: 'trial', label: '試行' },
@@ -1089,7 +952,6 @@ async function startExperiment() {
         await preloadStimuli();
 
         // 実験実行
-        await runPracticePhase();
         for (const phase of state.preScanOrder) {
             if (phase === 'prelearned') {
                 await runPrelearnedTraining();

@@ -40,7 +40,7 @@ web_experiment/
     └── images/*.png
 ```
 
-`experiment-core.js` は互換用の古い補助モジュールです。現在のエントリポイントは `index.html` から読み込まれる `js/main.js` です。
+`stimuli/audio/female/*.mp3` は `Experiment/stimuli/audio/female/*.wav` から変換したブラウザ配信用コピーです。gTTSやブラウザ音声合成は本番刺激音声として使用しません。
 
 ## ローカル実行
 
@@ -65,7 +65,6 @@ http://localhost:8000
 
 - `参加者情報`: ID、カウンターバランス群、課題順序、刺激割当概要
 - `刺激割当`: pre-learned / TBL / lure の全刺激メタデータ
-- `練習`: 練習テストの反応
 - `Prelearned`: 明示的符号化と9-AFC確認テスト
 - `馴化`: 単語のみ/画像のみ提示と2-AFC再認
 - `MainLearning`: pilot/debugで `runMainExperimentInBrowser=true` にした場合のみ出力
@@ -78,6 +77,5 @@ http://localhost:8000
 - 本番web実施では `CONFIG.runMainExperimentInBrowser=false` とし、pre-scanner training/familiarizationのみを実施します。
 - ブラウザ内main taskをpilot/debugで有効化しても、main testではフィードバックを表示しません。
 - pre-learned確認テストもBerens仕様に合わせ、既定ではフィードバックなしです。
-- 練習フェーズのみ操作理解のためフィードバックを表示します。
 - 学習試行順序はpre-learned/TBLをランダムに混在させ、隣接試行で同じペアが出ない制約のみを課しています。
 - Excel出力はCDN版ExcelJSに依存しています。オフライン運用が必要な場合はExcelJSをローカルに配置してください。
