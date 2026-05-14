@@ -52,6 +52,25 @@ function getRandomITI(config) {
     return state.rng.randFloat(config.min, config.max);
 }
 
+function fnv1a32(text) {
+    const data = new TextEncoder().encode(text);
+    let hash = 0x811c9dc5;
+    for (const byte of data) {
+        hash ^= byte;
+        hash = Math.imul(hash, 0x01000193);
+    }
+    return hash >>> 0;
+}
+
+function orderStimuliByParticipant(stimuli, participantId) {
+    return [...stimuli].sort((a, b) => {
+        const hashA = fnv1a32(`${participantId}|${a.id}`);
+        const hashB = fnv1a32(`${participantId}|${b.id}`);
+        if (hashA !== hashB) return hashA - hashB;
+        return Number(a.id) - Number(b.id);
+    });
+}
+
 // =============================================================================
 // 音声
 // =============================================================================
@@ -843,7 +862,7 @@ async function saveData() {
         ['参加者ID', state.experimentData.participant],
         ['カウンターバランス群', state.experimentData.group],
         ['Pre-scan課題順序', state.experimentData.preScanOrder],
-        ['刺激割当規則', 'List 1を参加者IDシードでpre-learned/TBLに9語ずつ分割; List 2をルアーに使用'],
+        ['刺激割当規則', 'List 1をMRI本番実装と同じFNV-1a(参加者ID|刺激ID)安定ソートでpre-learned/TBLに9語ずつ分割; List 2をルアーに使用'],
         ['Pre-learned語', state.prelearnedWords.map(w => w.word).join(', ')],
         ['To-be-learned語', state.toBeLearnedWords.map(w => w.word).join(', ')],
         ['再認テスト用ルアー', state.lureWords.map(w => w.word).join(', ')],
@@ -1026,8 +1045,8 @@ async function initialize() {
     // 乱数生成器初期化
     state.rng = new SeededRandom(state.participantId);
     
-    // 刺激割り当て: List 1を参加者内でpre-learned/TBLに分割し、List 2をルアーに使う。
-    const orderedList1 = state.rng.shuffle([...LIST_1]);
+    // 刺激割り当て: MRI本番実装と同じFNV-1a安定ソートでList 1を分割する。
+    const orderedList1 = orderStimuliByParticipant(LIST_1, state.participantId);
     state.prelearnedWords = orderedList1.slice(0, CONFIG.nActiveWordsPerSet);
     state.toBeLearnedWords = orderedList1.slice(
         CONFIG.nActiveWordsPerSet,

@@ -18,7 +18,7 @@ Zoteroの `cross situational statistical learning` / `statistical learning` コ�
 
 `js/stimuli-data.js` は `Experiment/stimuli_map.json` を反映しています。
 
-- `List 1`: 学習用18語。参加者IDをシードにランダム化し、先頭9語をpre-learned、残り9語をto-be-learnedに割り当てます。
+- `List 1`: 学習用18語。MRI本番実装と同じく、参加者IDと刺激IDのFNV-1aハッシュで安定ソートし、先頭9語をpre-learned、残り9語をto-be-learnedに割り当てます。
 - `List 2`: 2-AFC再認用の未学習ルアー9語。
 - 参加者IDの奇数/偶数でpre-scanner課題順序をカウンターバランスします。
   - Group 1: pre-learned training -> familiarization
