@@ -427,19 +427,6 @@ body {
         height: auto;
         max-height: 120px;
     }
-    
-    .grid-cell {
-        width: 30vw;
-        height: 18vw;
-        min-width: 96px;
-        min-height: 64px;
-    }
-    
-    .grid-image {
-        width: 27vw;
-        height: auto;
-        max-height: 15vw;
-    }
 }
 
 /* =============================================================================
