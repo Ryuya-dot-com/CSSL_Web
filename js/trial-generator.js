@@ -3,7 +3,7 @@
  * シード付きランダム化と試行リスト生成
  */
 
-import { isValidTriplet, getConfusablePhoneme } from './stimuli-data.js';
+import { getConfusablePhoneme } from './stimuli-data.js';
 import { CONFIG } from './config.js';
 
 /**
@@ -79,9 +79,6 @@ function generateLearningTrials(words, repetitions, rng) {
             let found = false;
             for (let a = 0; a < 200; a++) {
                 const candidates = rng.sample(available, 3);
-                
-                // 音韻制約チェック
-                if (!isValidTriplet(candidates)) continue;
                 
                 // 前の試行との重複チェック
                 if (trials.length > 0) {

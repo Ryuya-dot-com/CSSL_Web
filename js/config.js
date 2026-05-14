@@ -6,6 +6,9 @@
 const CONFIG = {
     // === 実験構造 ===
     nBlocks: 6,
+    // 本番運用ではwebはpre-scanner training/familiarizationのみ実施し、
+    // CSSL本課題はMRI内で実施する。ブラウザ内main taskはpilot/debug用。
+    runMainExperimentInBrowser: false,
     repetitionsPerBlock: 3,  // 各単語のブロック内出現回数
     objectsPerTrial: 3,      // 学習試行あたりのオブジェクト数
     

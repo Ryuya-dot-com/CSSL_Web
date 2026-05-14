@@ -1010,15 +1010,23 @@ async function preloadStimuli() {
     const allWords = [...state.prelearnedWords, ...state.toBeLearnedWords, ...state.lureWords];
     const total = allWords.length * 2;  // 音声 + 画像
     let loaded = 0;
+    const failures = [];
     
     for (const word of allWords) {
-        await loadAudio(word.word);
+        if (!await loadAudio(word.word)) {
+            failures.push(`audio:${word.word}`);
+        }
         loaded++;
         updateProgress(loaded, total, `読み込み中... ${loaded}/${total}`);
         
-        await loadImage(word.word);
+        if (!await loadImage(word.word)) {
+            failures.push(`image:${word.word}`);
+        }
         loaded++;
         updateProgress(loaded, total, `読み込み中... ${loaded}/${total}`);
+    }
+    if (failures.length > 0) {
+        throw new Error(`Stimulus preload failed: ${failures.join(', ')}`);
     }
 }
 
@@ -1065,34 +1073,42 @@ async function initialize() {
     state.experimentData.group = state.counterbalanceGroup;
     state.experimentData.preScanOrder = state.preScanOrder.join(' -> ');
     state.experimentData.startTime = new Date().toISOString();
-    
+
     return true;
 }
 
 async function startExperiment() {
-    if (!await initialize()) return;
-    
-    // 音声コンテキスト初期化（ユーザーインタラクション後）
-    await initAudio();
-    
-    // 刺激プリロード
-    showScreen('loading-screen');
-    await preloadStimuli();
-    
-    // 実験実行
-    await runPracticePhase();
-    for (const phase of state.preScanOrder) {
-        if (phase === 'prelearned') {
-            await runPrelearnedTraining();
-        } else if (phase === 'familiarization') {
-            await runFamiliarization();
+    try {
+        if (!await initialize()) return;
+
+        // 音声コンテキスト初期化（ユーザーインタラクション後）
+        await initAudio();
+
+        // 刺激プリロード
+        showScreen('loading-screen');
+        await preloadStimuli();
+
+        // 実験実行
+        await runPracticePhase();
+        for (const phase of state.preScanOrder) {
+            if (phase === 'prelearned') {
+                await runPrelearnedTraining();
+            } else if (phase === 'familiarization') {
+                await runFamiliarization();
+            }
         }
+        if (CONFIG.runMainExperimentInBrowser) {
+            await runMainExperiment();
+        }
+
+        // 終了
+        showScreen('end-screen');
+        await saveData();
+    } catch (error) {
+        console.error(error);
+        alert(`実験を開始または継続できませんでした: ${error.message}`);
+        showScreen('welcome-screen');
     }
-    await runMainExperiment();
-    
-    // 終了
-    showScreen('end-screen');
-    await saveData();
 }
 
 // =============================================================================
