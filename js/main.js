@@ -209,6 +209,19 @@ function displayLearningStimuli(items) {
 // テストグリッド表示（9-AFC）
 // =============================================================================
 
+function markGridWaitingForResponse(grid, enableDelayMs) {
+    grid.classList.remove('waiting-response');
+    grid.removeAttribute('aria-disabled');
+    if (enableDelayMs <= 0) return;
+
+    grid.classList.add('waiting-response');
+    grid.setAttribute('aria-disabled', 'true');
+    setTimeout(() => {
+        grid.classList.remove('waiting-response');
+        grid.removeAttribute('aria-disabled');
+    }, enableDelayMs);
+}
+
 function displayTestGrid(alternatives, options = {}) {
     return new Promise((resolve) => {
         const grid = document.getElementById('grid-container');
@@ -219,15 +232,7 @@ function displayTestGrid(alternatives, options = {}) {
         const enableDelayMs = options.enableDelayMs || 0;
         const maxResponseTime = options.maxResponseTime || CONFIG.maxResponseTime;
         const responseStart = performance.now() + enableDelayMs;
-        
-        if (enableDelayMs > 0) {
-            grid.style.pointerEvents = 'none';
-            setTimeout(() => {
-                grid.style.pointerEvents = 'auto';
-            }, enableDelayMs);
-        } else {
-            grid.style.pointerEvents = 'auto';
-        }
+        markGridWaitingForResponse(grid, enableDelayMs);
         
         alternatives.forEach((item, idx) => {
             const cell = document.createElement('div');
@@ -270,15 +275,7 @@ function displayTwoChoice(options, type, config = {}) {
         const enableDelayMs = config.enableDelayMs || 0;
         const maxResponseTime = config.maxResponseTime || CONFIG.recognitionMaxResponseTime;
         const responseStart = performance.now() + enableDelayMs;
-        
-        if (enableDelayMs > 0) {
-            grid.style.pointerEvents = 'none';
-            setTimeout(() => {
-                grid.style.pointerEvents = 'auto';
-            }, enableDelayMs);
-        } else {
-            grid.style.pointerEvents = 'auto';
-        }
+        markGridWaitingForResponse(grid, enableDelayMs);
         
         options.forEach((option, idx) => {
             const cell = document.createElement('div');

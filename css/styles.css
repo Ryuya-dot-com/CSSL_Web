@@ -339,6 +339,24 @@ body {
     transform: scale(0.98);
 }
 
+.grid-9afc.waiting-response .grid-cell,
+.grid-2afc.waiting-response .grid-cell {
+    opacity: 0.55;
+    cursor: wait;
+    border-color: #e6e6e6;
+    transform: none;
+    box-shadow: none;
+}
+
+.grid-9afc.waiting-response .grid-cell:hover,
+.grid-2afc.waiting-response .grid-cell:hover,
+.grid-9afc.waiting-response .grid-cell:active,
+.grid-2afc.waiting-response .grid-cell:active {
+    border-color: #e6e6e6;
+    transform: none;
+    box-shadow: none;
+}
+
 .grid-image {
     width: 250px;
     height: auto;
