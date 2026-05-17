@@ -238,10 +238,9 @@ function generateBlockTrials(tblWords, preWords, blockNum, rng) {
 function generatePrelearnedTrainingTrials(words, repetitions, rng) {
     const trials = [];
     for (let r = 0; r < repetitions; r++) {
-        const shuffled = rng.shuffle([...words]);
-        trials.push(...shuffled);
+        trials.push(...words);
     }
-    return trials;
+    return rng.shuffle(trials);
 }
 
 /**

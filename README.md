@@ -7,7 +7,7 @@
 根拠にしている仕様:
 
 - Berens, Horst, & Bird (2018): 9 pre-learned pairs、9 to-be-learned pairs、6 blocks、各ブロックは学習18試行と9-AFCテスト18試行。
-- Pre-scanner training: pre-learned 9ペアの明示的符号化を各5回、その後9-AFC。TBL刺激は単語のみ/画像のみの馴化を各5回、その後2-AFC再認。
+- Pre-scanner training: pre-learned 9ペアの明示的符号化を各5回、全45試行を参加者seedでランダム順に提示し、その後9-AFC。TBL刺激は単語のみ/画像のみの馴化を各5回、その後2-AFC再認。Pre-scannerのstudy/familiarization ITIは2s。
 - Learning trial: 3物体を提示し、対応する3語をランダム順で聴覚提示。単語順と物体位置は対応しない。
 - In-scanner main task: MRI側スクリプトで、conditionごとに9物体の3x3グリッドを提示し、音声キュー後1100msから反応可能。
 - Learning/test ITI: Berens STAR Methodsに合わせ、学習3-7s、テスト2-4sのuniform jitter。
@@ -23,6 +23,7 @@ Zoteroの `cross situational statistical learning` / `statistical learning` コ�
 - 参加者IDの奇数/偶数でpre-scanner課題順序をカウンターバランスします。
   - Group 1: pre-learned training -> familiarization
   - Group 2: familiarization -> pre-learned training
+- 刺激割当は参加者IDと刺激IDのFNV-1a安定ソートでMRI側と一致させます。試行順序は `prelearned-training` / `familiarization` / `main-block-N` ごとに参加者ID由来の独立seedを使い、課題順序のカウンターバランスが各phase内のランダム順序を変えないようにしています。
 
 ## ファイル構成
 
@@ -52,7 +53,7 @@ python3 scripts/convert_mri_wav_to_mp3.py
 `file://` ではmodule/fetch/CDNまわりで動作が不安定になるため、ローカルサーバーで起動します。
 
 ```bash
-cd /Users/ryuya/Library/CloudStorage/Dropbox/fMRI_CSSL/web_experiment
+cd /Users/ryuya/Library/CloudStorage/Dropbox/fMRI_CSSL/CSSL_Web
 python3 -m http.server 8000
 ```
 
@@ -80,7 +81,10 @@ http://localhost:8000
 ## 実装上の注意
 
 - 本番web実施では `CONFIG.runMainExperimentInBrowser=false` とし、pre-scanner training/familiarizationのみを実施します。
+- Berens STAR Methodsではpre-scanner 9-AFC/2-AFCの秒数制限が明記されていないため、本番webのpre-scannerテストはタイムアウトなしです。6秒の `maxResponseTime` はpilot/debug用browser main taskにのみ使います。
+- Pre-learned確認9-AFCはBerensのkeyboard-controlled cursorに合わせ、1=右、2=下、3=決定でも操作できます。テスト画面下部にもこの操作文言を表示します。クリックは補助入力として残しています。
 - ブラウザ内main taskをpilot/debugで有効化しても、main testではフィードバックを表示しません。
 - pre-learned確認テストもBerens仕様に合わせ、既定ではフィードバックなしです。
-- 学習試行順序はpre-learned/TBLをランダムに混在させ、隣接試行で同じペアが出ない制約のみを課しています。
+- ブラウザ内main taskをpilot/debugで有効化した場合も、学習試行順序はpre-learned/TBLをランダムに混在させ、隣接試行で同じペアが出ない制約のみを課しています。
+- `Prelearned` と `馴化` のExcel出力には、選択肢順、選択肢ID、正答位置、反応位置、音声onset、反応時刻、提示終了時刻を監査用に保存します。
 - Excel出力はCDN版ExcelJSに依存しています。オフライン運用が必要な場合はExcelJSをローカルに配置してください。

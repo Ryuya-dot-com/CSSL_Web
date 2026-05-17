@@ -266,6 +266,28 @@ body {
     white-space: pre-line;
 }
 
+#response-instruction {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: none;
+    padding: 10px 18px;
+    border: 1px solid #d8dce2;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.96);
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    white-space: pre-line;
+}
+
+#response-instruction.visible {
+    display: block;
+}
+
 /* =============================================================================
    注視点
    ============================================================================= */
@@ -339,6 +361,12 @@ body {
     transform: scale(0.98);
 }
 
+.grid-cell.selected {
+    border-color: #1f5eff;
+    box-shadow: 0 0 0 4px rgba(31, 94, 255, 0.18);
+    transform: scale(1.03);
+}
+
 .grid-9afc.waiting-response .grid-cell,
 .grid-2afc.waiting-response .grid-cell {
     opacity: 0.55;
@@ -355,6 +383,12 @@ body {
     border-color: #e6e6e6;
     transform: none;
     box-shadow: none;
+}
+
+.grid-9afc.waiting-response .grid-cell.selected {
+    opacity: 0.75;
+    border-color: #1f5eff;
+    box-shadow: 0 0 0 4px rgba(31, 94, 255, 0.12);
 }
 
 .grid-image {

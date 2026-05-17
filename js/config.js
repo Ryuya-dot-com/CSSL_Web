@@ -25,7 +25,7 @@ const CONFIG = {
     // === To-be-learned馴化 ===
     familiarizationRepetitions: 5,  // 馴化の反復回数
     familiarizationDuration: 6000,  // 馴化の呈示時間(ms)
-    familiarizationITI: 500,        // 馴化のITI(ms)
+    familiarizationITI: 2000,       // 馴化のITI(ms)
     
     // === 学習フェーズタイミング ===
     learningTrialDuration: 6000,   // 学習試行の総時間(ms)
@@ -35,7 +35,8 @@ const CONFIG = {
     // === テストフェーズタイミング ===
     fixationDuration: 500,         // 注視点の時間(ms)
     preAudioDelay: 0,              // 音声前の遅延(ms)
-    maxResponseTime: 6000,         // 最大反応時間(ms)
+    maxResponseTime: 6000,         // pilot/debug用main task最大反応時間(ms)
+    prelearnedTestMaxResponseTime: 0, // 0 = pre-scanner 9-AFCはタイムアウトなし
     responseEnableDelay: 1100,     // 反応受付開始までの遅延(ms)
     testITI: { min: 2000, max: 4000 },  // 試行間インターバル(ms)
     feedbackDuration: 500,         // フィードバック表示時間(ms)
@@ -43,7 +44,7 @@ const CONFIG = {
     
     // === 再認テスト（馴化後） ===
     recognitionInterStimulusInterval: 500,
-    recognitionMaxResponseTime: 6000,
+    recognitionMaxResponseTime: 0,  // 0 = pre-scanner 2-AFCはタイムアウトなし
     
     // === 課題順序・フィードバック ===
     // Berens et al. (2018) counterbalanced pre-scanner task order.
